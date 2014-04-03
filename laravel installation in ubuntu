@@ -1,0 +1,43 @@
+su:
+
+apt-get install curl
+apt-get update
+apt-get install libcurl3 php5-curl
+
+apt-get install php5-json
+cd /usr/local/sbin/
+wget http://laravel.com/laravel.phar
+mv laravel.phar laravel
+chmod 777 laravel
+exit
+
+cd /var/www/
+laravel new lp
+chmod 777 -fR lp/app/storage/
+
+su:
+nano /etc/apache2/sites-available/laravel4
+<VirtualHost *:80>
+ServerAdmin webmaster@localhost
+ServerName lp.loc	
+
+DocumentRoot /var/www/lp/public
+
+<Directory /var/www/>
+Options Indexes FollowSymLinks MultiViews
+AllowOverride All
+Order allow,deny
+allow from all
+</Directory>
+
+</VirtualHost>
+a2ensite laravel4
+service apache2 reload / service apache2 restart
+
+nano /etc/hosts
+127.0.1.1	lp.loc
+
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/sbin --filename=composer
+
+cd /var/www/lp/
+composer update --no-scripts
